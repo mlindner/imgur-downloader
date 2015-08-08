@@ -58,7 +58,13 @@ def main(argv):
             fetch_url = 'https://i.imgur.com/' + filename
 
             print "Writing {} to {}".format(fetch_url, out_file)
-            urllib.urlretrieve(fetch_url, out_file)
+            try:
+                urllib.urlretrieve(fetch_url, out_file)
+            except:
+                if os.path.exists(out_file):
+                    print "Deleted partially written file"
+                    os.remove(out_file)
+                raise
 
         page += 1
 
