@@ -3,6 +3,9 @@ import argparse
 import requests
 import urllib
 import os.path
+import os
+import json
+import io
 
 
 def parse_args():
@@ -50,6 +53,7 @@ def main(argv):
 
         for meta in data:
             filename = meta['hash'] + meta['ext']
+            json_file = os.path.join(output, meta['hash'] + '.json')
             out_file = os.path.join(output, filename)
 
             if args._continue and os.path.exists(out_file):
@@ -65,6 +69,10 @@ def main(argv):
                     print "Deleted partially written file"
                     os.remove(out_file)
                 raise
+
+            with io.open(json_file, 'w', encoding='utf8') as json_out_file:
+                data = json.dumps(meta, sort_keys=True, ensure_ascii=False, indent=2)
+                json_out_file.write(unicode(data))
 
         page += 1
 
